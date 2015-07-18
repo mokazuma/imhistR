@@ -7,24 +7,30 @@
 lrgbhist(input, mode = "file", hist = "histgram", resize = FALSE)
 }
 \arguments{
-\item{input}{file}
+\item{input}{Set file, folder or url for analysis corresponding to mode parameter.}
 
-\item{mode}{file}
+\item{mode}{Select a mode in all four modes. Modes are "file"(default), "url", "folder", and "scraping".}
 
-\item{hist}{file}
+\item{hist}{Whether histgram draw or not. Dafult is draw. However, you should set FALSE when you want fast computation.
+Also this parameter is used for output name when you use folder or scraping mode (Default output name is "histgram").}
 
 \item{resize}{file}
 }
 \value{
-image histgram of Luminance and RGB
+image histgram and thier descriptive stastics (Luminance & RGB)
 }
 \description{
-Most data operations are useful done on groups defined by variables in the
-the dataset. The \code{group_by} function takes an existing tbl
-and converts it into a grouped tbl where operations are performed
-"by group".
+Analysis an image from .jpg or .png file. Draw luminance, read, blue, and green histgram of pixel.
+Calculate mean, sd, skewness, and kurtsis for each histgram.
 }
 \examples{
-lrgbhist("test")
+# Simple use is only set input image file.
+lrgbhist(system.file("img", "newlogo.png", package="imhistR"))
+# lrgbhist("img.png")  # you can use like this.
+
+# Url mode needs to input image URL.
+# Only URL tail ".jpg" or ".png" can analysis.
+url <- "http://www.r-project.org/Rlogo.png"
+lrgbhist(url, mode="url")
 }
 

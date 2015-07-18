@@ -1,22 +1,27 @@
 #' Provide image Luminance & RGB histgram
 #'
-#' Most data operations are useful done on groups defined by variables in the
-#' the dataset. The \code{group_by} function takes an existing tbl
-#' and converts it into a grouped tbl where operations are performed
-#' "by group".
+#' Analysis an image from .jpg or .png file. Draw luminance, read, blue, and green histgram of pixel.
+#' Calculate mean, sd, skewness, and kurtsis for each histgram.
 #'
-#'
-#' @param input file
-#' @param mode file
-#' @param hist file
+#' @param input Set file, folder or url for analysis corresponding to mode parameter.
+#' @param mode Select a mode in all four modes. Modes are "file"(default), "url", "folder", and "scraping".
+#' @param hist Whether histgram draw or not. Dafult is draw. However, you should set FALSE when you want fast computation.
+#' Also this parameter is used for output name when you use folder or scraping mode (Default output name is "histgram").
 #' @param resize file
 #'
-#' @return image histgram of Luminance and RGB
+#' @return image histgram and thier descriptive stastics (Luminance & RGB)
 #'
 #' @export
 #'
 #' @examples
-#' lrgbhist("test")
+#' # Simple use is only set input image file.
+#' lrgbhist(system.file("img", "newlogo.png", package="imhistR"))
+#' # lrgbhist("img.png")  # you can use like this.
+#'
+#' # Url mode needs to input image URL.
+#' # Only URL tail ".jpg" or ".png" can analysis.
+#' url <- "http://www.r-project.org/Rlogo.png"
+#' lrgbhist(url, mode="url")
 #'
 
 lrgbhist <- function(input, mode="file", hist="histgram", resize=FALSE) {
@@ -166,6 +171,6 @@ lrgbhist <- function(input, mode="file", hist="histgram", resize=FALSE) {
       message("!! Error has occurred. Please change some parameters")
       message(e)
       if(hist!=FALSE && mode=="folder" || mode=="scraping")  dev.off()
-      },
+    },
     silent=TRUE)
 }

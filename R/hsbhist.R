@@ -1,28 +1,40 @@
-#'
 #' Provide image HSB(HSV) color space histgram
 #'
-#' @param input file
-#' @param mode file
-#' @param output file
-#' @param histgram file
+#' Analysis an image from .jpg or .png file. Draw Hue or saturation or brightness(value) color space histgram of pixel.
+#' Calculate mean, sd, skewness, and kurtsis for each histgram.
+#'
+#' @param input Set file, folder or url for analysis corresponding to mode parameter.
+#' @param mode Select a mode in all four modes. Modes are "file"(default), "url", "folder", and "scraping".
+#' @param hist Whether histgram draw or not. Dafult is draw. However, you should set FALSE when you want fast computation.
+#' Also this parameter is used for output name when you use folder or scraping mode (Default output name is "histgram").
 #' @param resize file
 #'
-#' @return image histgram of Luminance and RGB
+#' @return image histgram and thier descriptive stastics (HSB color space)
 #'
 #' @export
 #'
 #' @examples
-#' hsbhist(input="test", mode="file", output="test")
+#' # Simple use is only set input image file.
+#' hsbhist(system.file("img", "newlogo.png", package="imhistR"))
+#' # hsbhist("img.png")  # you can use like this.
+#'
+#' # Url mode needs to input image URL.
+#' # Only URL tail ".jpg" or ".png" can analysis.
+#' url <- "http://www.r-project.org/Rlogo.png"
+#' hsbhist(url, mode="url")
+#'
 #'
 
-hsbhist <- function(input, mode="file", output, histgram=TRUE, resize=FALSE) {
+hsbhist <- function(input, mode="file", hist="histgram", resize=FALSE) {
   ##### set print
-  if(histgram)  Cairo::CairoPDF(paste0(output,".pdf"), paper="a4r", width=11.69, height=8.27)
+  if((hist!=FALSE && mode=="folder") || (hist!=FALSE && mode=="scraping")) {
+    Cairo::CairoPDF(paste0(hist,".pdf"), paper="a4r", width=11.69, height=8.27)
+  }
   tryCatch(
     { ##### set input type
-      if(grepl(".jpg", input, fixed = TRUE))   type <- ".jpg"
-      if(grepl(".jpeg", input, fixed = TRUE))  type <- ".jpeg"
-      if(grepl(".png", input, fixed = TRUE))   type <- ".png"
+      if(grepl(".jpg",  input, fixed = TRUE))   type <- ".jpg"
+      if(grepl(".jpeg", input, fixed = TRUE))   type <- ".jpeg"
+      if(grepl(".png",  input, fixed = TRUE))   type <- ".png"
       ##### set mode: file, url, dir, scraping
       current <- getwd()
       if(mode=="file") {
@@ -32,16 +44,19 @@ hsbhist <- function(input, mode="file", output, histgram=TRUE, resize=FALSE) {
                     list.files(path=input, pattern=".jpeg") )
         filNum <- length(datfil)
       } else if(mode=="url") {
-        downloader::download(input, paste0(current, "/", output, type), mode="wb")
-        datfil <- paste0(output, ".jpg"); filNum <- 1
+        downloader::download(input, paste0(current, "/", hist, type), mode="wb")
+        datfil <- paste0(hist, type); filNum <- 1
+        cat(paste0(hist, type, " in ", current, "\n"))  # return message
       } else if(mode=="scraping") {
         type <- ".jpg"
         if (!file.exists(paste0(current, "/", mode)))  dir.create(mode)     # folder check
+        cat(paste0(mode, "folder in ", current, "\n"))  # return message
         webinf <- rvest::html(input)
-        imgnod <- rvest::html_nodes(webinf, "img"); nodtext <- rvest::html_attrs(imgnod)
+        imgnod <- rvest::html_nodes(webinf, "img")
+        nodtext <- rvest::html_attrs(imgnod)
         for(i in 1:length(nodtext)) {
           downloader::download(as.character(nodtext[[i]][2]),
-                               sprintf("%s/%s/%s_%02d%s", current, mode, output, i, type),
+                               sprintf("%s/%s/%s_%02d%s", current, mode, hist, i, type),
                                mode="wb")
           Sys.sleep(3)
         }
@@ -58,9 +73,9 @@ hsbhist <- function(input, mode="file", output, histgram=TRUE, resize=FALSE) {
         ##### read dat
         if(mode=="scraping")  setwd(paste0(current, "/scraping"))
         if(mode=="folder") {
-          if(grepl(".jpg", datfil[f], fixed = TRUE))   type <- ".jpg"
-          if(grepl(".jpeg", datfil[f], fixed = TRUE))  type <- ".jpeg"
-          if(grepl(".png", datfil[f], fixed = TRUE))   type <- ".png"
+          if(grepl(".jpg",  datfil[f], fixed = TRUE))   type <- ".jpg"
+          if(grepl(".jpeg", datfil[f], fixed = TRUE))   type <- ".jpeg"
+          if(grepl(".png",  datfil[f], fixed = TRUE))   type <- ".png"
         }
         if(type==".jpg" || type==".jpeg")   img <- jpeg::readJPEG(datfil[f])
         if(type==".png")                    img <- png::readPNG(datfil[f])
@@ -83,9 +98,9 @@ hsbhist <- function(input, mode="file", output, histgram=TRUE, resize=FALSE) {
         ##### HSV calculate
         dat <- array(0, c(nrow(img), ncol(img), 3))
         if(nrow(img) < ncol(img)) {
-          for(i in 1:ncol(img))   dat[,i,] <- t(rgb2hsv(t(img[,i,]), maxColorValue=1))
+          for(i in 1:ncol(img))   dat[,i,] <- t(rgb2hsv(t(img[,i,1:3]), maxColorValue=1))
         } else {
-          for(i in 1:nrow(img))   dat[i,,] <- t(rgb2hsv(t(img[i,,]), maxColorValue=1))
+          for(i in 1:nrow(img))   dat[i,,] <- t(rgb2hsv(t(img[i,,1:3]), maxColorValue=1))
         }
         val <- c("Hue", "Saturation", "Brightness")
         if(resize) {
@@ -117,7 +132,7 @@ hsbhist <- function(input, mode="file", output, histgram=TRUE, resize=FALSE) {
             modecol <- max(dplyr::select(modecol, M))
           }
           ##### histgram
-          if(histgram) {
+          if(hist!=FALSE) {
             g <- ggplot2::ggplot(imgdat, ggplot2::aes(x=value, fill=..x..)) +
               ggplot2::stat_bin(binwidth = 1/70) +
               ggplot2::ylab("Number of pixels") + ggplot2::xlab(val[i]) +
@@ -138,7 +153,7 @@ hsbhist <- function(input, mode="file", output, histgram=TRUE, resize=FALSE) {
           }
         }
         savedat[f,] <- imgall
-        if(histgram) {
+        if(hist!=FALSE) {
           ##### multiple plot
           grid::grid.newpage()
           grid::pushViewport(grid::viewport(layout = grid::grid.layout(2, 3, heights = grid::unit(c(1, 9), "null"))))
@@ -155,16 +170,18 @@ hsbhist <- function(input, mode="file", output, histgram=TRUE, resize=FALSE) {
                              "Mean_Saturation", "SD_Saturation", "Skew_Saturation", "Kurt_Saturation",
                              "Mean_Brightness", "SD_Brightness", "Skew_Brightness", "Kurt_Brightness")
       row.names(savedat) <- datfil
-      write.csv(savedat, paste0(output, ".csv"))
-      if(histgram)    dev.off()
-      # return message
-      cat(paste0(output,".pdf and .csv ", "in ", current, "\n"))
+      if((hist!=FALSE && mode=="folder") || (hist!=FALSE && mode=="scraping")) {
+        dev.off()
+        cat(paste0(hist, ".pdf in ", current, "\n"))  # return message and dat
+      }
+      return(savedat)
     },
     ##### error processing
     error = function(e) {
       message("Error has occurred. Please change some parameters")
       message(e)
-      dev.off() },
+      if(hist!=FALSE && mode=="folder" || mode=="scraping")  dev.off()
+    },
     silent=TRUE)
 }
 

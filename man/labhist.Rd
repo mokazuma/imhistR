@@ -4,26 +4,33 @@
 \alias{labhist}
 \title{Provide image Lab color space histgram}
 \usage{
-labhist(input, mode = "file", output, histgram = TRUE, resize = FALSE)
+labhist(input, mode = "file", hist = "histgram", resize = FALSE)
 }
 \arguments{
-\item{input}{file}
+\item{input}{Set file, folder or url for analysis corresponding to mode parameter.}
 
-\item{mode}{file}
+\item{mode}{Select a mode in all four modes. Modes are "file"(default), "url", "folder", and "scraping".}
 
-\item{output}{file}
-
-\item{histgram}{file}
+\item{hist}{Whether histgram draw or not. Dafult is draw. However, you should set FALSE when you want fast computation.
+Also this parameter is used for output name when you use folder or scraping mode (Default output name is "histgram").}
 
 \item{resize}{file}
 }
 \value{
-image histgram of Luminance and RGB
+image histgram and thier descriptive stastics (Lab color space)
 }
 \description{
-Provide image Lab color space histgram
+Analysis an image from .jpg or .png file. Draw L or a or b color space histgram of pixel.
+Calculate mean, sd, skewness, and kurtsis for each histgram.
 }
 \examples{
-labhist(input="test", mode="file", output="test")
+# Simple use is only set input image file.
+labhist(system.file("img", "newlogo.png", package="imhistR"))
+# labhist("img.png")  # you can use like this.
+
+# Url mode needs to input image URL.
+# Only URL tail ".jpg" or ".png" can analysis.
+url <- "http://www.r-project.org/Rlogo.png"
+labhist(url, mode="url")
 }
 
