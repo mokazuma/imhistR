@@ -10,7 +10,7 @@ imhistR is the easy image processing tool. This package focussed for luminance, 
 
 Install:
 
--   the latest development version get from github with
+-   The latest development version get from github with
 
     ``` r
     if (packageVersion("devtools") < 1.6) {
@@ -19,9 +19,11 @@ Install:
     devtools::install_github("mokazuma/imhistR")
     ```
 
-For example,
+-   Usage example:
 
-    ```R
+    ``` r
     require("imhistR")
-    lrgbhist("http://blog-imgs-35-origin.fc2.com/i/m/a/imagingsolution/Lenna.png", mode="url", hist="Lena")
+    lrgbhist("http://www.ess.ic.kanagawa-it.ac.jp/std_img/colorimage/Lenna.jpg", mode="url", hist="Lenna")
     ```
+
+You get image histgram and their descriptive stastics.
