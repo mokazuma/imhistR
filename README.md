@@ -23,7 +23,7 @@ Install:
 
     ``` r
     require("imhistR")
-    lrgbhist("http://www.ess.ic.kanagawa-it.ac.jp/std_img/colorimage/Lenna.jpg", mode="url", hist="Lenna")
+    lrgbhist(input="http://www.ess.ic.kanagawa-it.ac.jp/std_img/colorimage/Lenna.jpg", mode="url", hist="Lenna")
     ```
 
 You get image histgram and their descriptive stastics.
