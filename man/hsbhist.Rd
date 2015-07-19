@@ -13,7 +13,7 @@ hsbhist(input, mode = "file", hist = "histgram", resize = FALSE,
 \item{mode}{Select a mode in all four modes. Modes are "file"(default), "url", "folder", and "scraping".}
 
 \item{hist}{Whether histgram draw or not. Dafult is draw. However, you should set FALSE when you want fast computation for images of digital camera and smartphone. Rendering of ggplot2 is so long for these large pixels image.
-Also this parameter is used for output name when you use folder or scraping mode (Default output name is "histgram").}
+Also this parameter is used for output name when you use url, folder or scraping mode (Default output name is "histgram").}
 
 \item{resize}{This argument is important to process many image histgram fastly. If you set resize=1/4, the speed of drawing histgram is dramatically up although output values are approximation.
 Resize is recommended when you use folder mode and want to get many histgram.}
@@ -39,9 +39,9 @@ setwd(originaidir)  # set original dir
 
 
 # Url mode needs to input image URL.
-# Only URL tail ".jpg" or ".png" can analysis.
+# Only URL tail ".jpg" or ".png" can analyze.
 url <- "http://www.r-project.org/Rlogo.png"
-hsbhist(input=url, mode="url")
+hsbhist(input=url, mode="url", endoff=TRUE)
 
 
 # If you have a image folder in your PC, easily analyze all images by using folder mode.

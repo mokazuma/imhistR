@@ -6,11 +6,10 @@
 #' @param input Set file, folder or url for image analysis corresponding to mode parameter.
 #' @param mode Select a mode in all four modes. Modes are "file"(default), "url", "folder", and "scraping".
 #' @param hist Whether histgram draw or not. Dafult is draw. However, you should set FALSE when you want fast computation for images of digital camera and smartphone. Rendering of ggplot2 is so long for these large pixels image.
-#' Also this parameter is used for output name when you use folder or scraping mode (Default output name is "histgram").
+#' Also this parameter is used for output name when you use url, folder or scraping mode (Default output name is "histgram").
 #' @param resize This argument is important to process many image histgram fastly. If you set resize=1/4, the speed of drawing histgram is dramatically up although output values are approximation.
 #' Resize is recommended when you use folder mode and want to get many histgram.
-#' @param endoff If you want to get rid of image borders extreme value (white or black frame), you set this parameter TRUE.
-#'
+#' @param endoff If you want to get include of image borders extreme value (white or black frame), you set this parameter FALSE.
 #'
 #' @return image histgram and thier descriptive stastics (Luminance & RGB). Folder and scraping mode provide a pdf file.
 #' Range of all values are 0-1. Mathematical formula of luminance is 0.298912*red + 0.586611*green + 0.114478*blue.
@@ -28,7 +27,7 @@
 #'
 #'
 #' # Url mode needs to input image URL.
-#' # Only URL tail ".jpg" or ".png" can analysis.
+#' # Only URL tail ".jpg" or ".png" can analyze.
 #' url <- "http://www.r-project.org/Rlogo.png"
 #' lrgbhist(input=url, mode="url")
 #'
@@ -48,7 +47,7 @@
 #'
 #'
 
-lrgbhist <- function(input, mode="file", hist="histgram", resize=FALSE, endoff=FALSE) {
+lrgbhist <- function(input, mode="file", hist="histgram", resize=FALSE, endoff=TRUE) {
   ##### set print
   if((hist!=FALSE && mode=="folder") || (hist!=FALSE && mode=="scraping")) {
     Cairo::CairoPDF(paste0(hist,".pdf"), paper="a4r", width=11.69, height=8.27)
@@ -69,7 +68,6 @@ lrgbhist <- function(input, mode="file", hist="histgram", resize=FALSE, endoff=F
       } else if(mode=="url") {
         downloader::download(input, paste0(current, "/", hist, type), mode="wb")
         datfil <- paste0(hist, type); filNum <- 1
-        cat(paste0(hist, type, " in ", current, "\n"))  # return message
       } else if(mode=="scraping") {
         type <- ".jpg"
         if (!file.exists(paste0(current, "/", mode)))  dir.create(mode)     # folder check
@@ -102,6 +100,7 @@ lrgbhist <- function(input, mode="file", hist="histgram", resize=FALSE, endoff=F
         }
         if(type==".jpg" || type==".jpeg")   img <- jpeg::readJPEG(datfil[f])
         if(type==".png")                    img <- png::readPNG(datfil[f])
+        if(mode=="url")  file.remove(datfil[f])
         ##### thumbnail rescale (under 90000 pixel)
         dim1 <- dim(img)[1]; dim2 <- dim(img)[2]
         if(dim1>300 && dim2>300) {
@@ -145,10 +144,10 @@ lrgbhist <- function(input, mode="file", hist="histgram", resize=FALSE, endoff=F
             imgval <- imgdat$value
           }
           imgsta <- c(mean(imgval), sd(imgval), e1071::skewness(imgval, type=2), e1071::kurtosis(imgval, type=2))
-          imgall <- c(imgall, imgsta)
+          imgall <- c(imgall, imgsta); imgval <- data.frame(imgval)
           ##### histgram
           if(hist!=FALSE) {
-            g <- ggplot2::ggplot(imgdat, ggplot2::aes(x=value, fill=..x..)) +
+            g <- ggplot2::ggplot(imgval, ggplot2::aes(x=imgval, fill=..x..)) +
               ggplot2::stat_bin(binwidth = 1/255) +
               ggplot2::ylab("Number of pixels") + ggplot2::xlab(val[i]) + ggplot2::xlim(0, 1) +
               ggplot2::theme_bw(base_size=16) +
