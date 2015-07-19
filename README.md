@@ -18,3 +18,10 @@ Install:
     }
     devtools::install_github("mokazuma/imhistR")
     ```
+
+For example,
+
+    ```R
+    require("imhistR")
+    lrgbhist("http://blog-imgs-35-origin.fc2.com/i/m/a/imagingsolution/Lenna.png", mode="url", hist="Lena")
+    ```
