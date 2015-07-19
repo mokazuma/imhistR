@@ -29,7 +29,7 @@
 #' # Url mode needs to input image URL.
 #' # Only URL tail ".jpg" or ".png" can analyze.
 #' url <- "http://www.r-project.org/Rlogo.png"
-#' lrgbhist(input=url, mode="url")
+#' lrgbhist(input=url, mode="url", hist="Rlogo")
 #'
 #'
 #' # If you have a image folder in your PC, easily analyze all images by using folder mode.

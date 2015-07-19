@@ -29,7 +29,7 @@
 #' # Url mode needs to input image URL.
 #' # Only URL tail ".jpg" or ".png" can analyze.
 #' url <- "http://www.r-project.org/Rlogo.png"
-#' labhist(input=url, mode="url", endoff=TRUE)
+#' labhist(input=url, mode="url", hist="Rlogo")
 #'
 #'
 #' # If you have a image folder in your PC, easily analyze all images by using folder mode.
