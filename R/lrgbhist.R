@@ -9,6 +9,8 @@
 #' Also this parameter is used for output name when you use folder or scraping mode (Default output name is "histgram").
 #' @param resize This argument is important to process many image histgram fastly. If you set resize=1/4, the speed of drawing histgram is dramatically up although output values are approximation.
 #' Resize is recommended when you use folder mode and want to get many histgram.
+#' @param endoff If you want to get rid of image borders extreme value (white or black frame), you set this parameter TRUE.
+#'
 #'
 #' @return image histgram and thier descriptive stastics (Luminance & RGB). Folder and scraping mode provide a pdf file.
 #' Range of all values are 0-1. Mathematical formula of luminance is 0.298912*red + 0.586611*green + 0.114478*blue.
@@ -41,12 +43,12 @@
 #'
 #' # Web scraping from google image search is conducted by scraping mode. Twenty images were automatically downloaded and analyzed.
 #' # So many scraping should avoid in order to conform web manner.
-#' url <- "url from google image search of xxx"  # This package cannot provide the way to scraping other web pages
+#' url <- "url from google image search of xxx"  # This package does not provide the way to scraping other web pages
 #' lrgbhist(input=url, mode="scraping", hist="xxx")
 #'
 #'
 
-lrgbhist <- function(input, mode="file", hist="histgram", resize=FALSE) {
+lrgbhist <- function(input, mode="file", hist="histgram", resize=FALSE, endoff=FALSE) {
   ##### set print
   if((hist!=FALSE && mode=="folder") || (hist!=FALSE && mode=="scraping")) {
     Cairo::CairoPDF(paste0(hist,".pdf"), paper="a4r", width=11.69, height=8.27)
@@ -100,7 +102,7 @@ lrgbhist <- function(input, mode="file", hist="histgram", resize=FALSE) {
         }
         if(type==".jpg" || type==".jpeg")   img <- jpeg::readJPEG(datfil[f])
         if(type==".png")                    img <- png::readPNG(datfil[f])
-        ##### thumbnail rescale (under 9000 pixel)
+        ##### thumbnail rescale (under 90000 pixel)
         dim1 <- dim(img)[1]; dim2 <- dim(img)[2]
         if(dim1>300 && dim2>300) {
           while(dim1 > 200)  dim1 <- dim1 / 2
@@ -137,9 +139,12 @@ lrgbhist <- function(input, mode="file", hist="histgram", resize=FALSE) {
         for(i in 1:4) {
           ###### stastics
           imgdat <- tidyr::gather(data.frame(dat[i]), pixel, value)
-          imgdat <- dplyr::filter(imgdat, dplyr::between(value, 0.01, 0.99))
-          imgsta <- c(as.numeric(unlist(dplyr::summarise(imgdat, mean(value), sd(value)))),
-                      e1071::skewness(imgdat$value, type=2), e1071::kurtosis(imgdat$value, type=2))
+          if(endoff) {
+            imgval <- imgdat$value[(0.01 <imgdat$value) & (imgdat$value < 0.99)]
+          } else {
+            imgval <- imgdat$value
+          }
+          imgsta <- c(mean(imgval), sd(imgval), e1071::skewness(imgval, type=2), e1071::kurtosis(imgval, type=2))
           imgall <- c(imgall, imgsta)
           ##### histgram
           if(hist!=FALSE) {

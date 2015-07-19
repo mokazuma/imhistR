@@ -9,6 +9,7 @@
 #' Also this parameter is used for output name when you use folder or scraping mode (Default output name is "histgram").
 #' @param resize This argument is important to process many image histgram fastly. If you set resize=1/4, the speed of drawing histgram is dramatically up although output values are approximation.
 #' Resize is recommended when you use folder mode and want to get many histgram.
+#' @param endoff If you want to get rid of image borders extreme value (white or black frame), you set this parameter TRUE.
 #'
 #' @return image histgram and thier descriptive stastics (Lab color space). Folder and scraping mode provide a pdf file.
 #' L range is 0-100. A and b range are -110-110. Transform Lab from RGB are based on ITU-R BT 709, using the D65 white point reference.
@@ -41,12 +42,12 @@
 #'
 #' # Web scraping from google image search is conducted by scraping mode. Twenty images were automatically downloaded and analyzed.
 #' # So many scraping should avoid in order to conform web manner. If you already scraping image by other function of this package, you should use folder mode.
-#' url <- "url from google image search of xxx"  # This package cannot provide the way to scraping other web pages
+#' url <- "url from google image search of xxx"  # This package does not provide the way to scraping other web pages
 #' labhist(input=url, mode="scraping", hist="xxx")
 #'
 #'
 
-labhist <- function(input, mode="file", hist="histgram", resize=FALSE) {
+labhist <- function(input, mode="file", hist="histgram", resize=FALSE, endoff=FALSE) {
   ##### set print
   if((hist!=FALSE && mode=="folder") || (hist!=FALSE && mode=="scraping")) {
     Cairo::CairoPDF(paste0(hist,".pdf"), paper="a4r", width=11.69, height=8.27)
@@ -100,7 +101,7 @@ labhist <- function(input, mode="file", hist="histgram", resize=FALSE) {
         }
         if(type==".jpg" || type==".jpeg")   img <- jpeg::readJPEG(datfil[f])
         if(type==".png")                    img <- png::readPNG(datfil[f])
-        ##### thumbnail rescale (under 9000 pixel)
+        ##### thumbnail rescale (under 90000 pixel)
         dim1 <- dim(img)[1]; dim2 <- dim(img)[2]
         if(dim1>300 && dim2>300) {
           while(dim1 > 200)  dim1 <- dim1 / 2
@@ -143,11 +144,14 @@ labhist <- function(input, mode="file", hist="histgram", resize=FALSE) {
         for(i in 1:3) {
           ###### stastics
           imgdat <- tidyr::gather(data.frame(dat[,,i]), pixel, value)
-          if(i==1)  imgdat <- dplyr::filter(imgdat, dplyr::between(value, 1, 99))
-          if(i==2)  imgdat <- dplyr::filter(imgdat, dplyr::between(value, -109, 109))
-          if(i==3)  imgdat <- dplyr::filter(imgdat, dplyr::between(value, -109, 109))
-          imgsta <- c(as.numeric(unlist(dplyr::summarise(imgdat, mean(value), sd(value)))),
-                      e1071::skewness(imgdat$value, type=2), e1071::kurtosis(imgdat$value, type=2))
+          if(endoff) {
+            if(i==1)   imgval <- imgdat$value[(1 < imgdat$value) & (imgdat$value < 99)]
+            if(i==2)   imgval <- imgdat$value[(imgdat$value > -1) & (1 < imgdat$value)]
+            if(i==3)   imgval <- imgdat$value[(imgdat$value > -1) & (1 < imgdat$value)]
+          } else {
+            imgval <- imgdat$value
+          }
+          imgsta <- c(mean(imgval), sd(imgval), e1071::skewness(imgval, type=2), e1071::kurtosis(imgval, type=2))
           imgall <- c(imgall, imgsta)
           ##### histgram
           if(hist!=FALSE) {
@@ -170,8 +174,8 @@ labhist <- function(input, mode="file", hist="histgram", resize=FALSE) {
           }
         }
         savedat[f,] <- imgall
+        ##### multiple plot
         if(hist!=FALSE) {
-          ##### multiple plot
           grid::grid.newpage()
           grid::pushViewport(
             grid::viewport(layout = grid::grid.layout(2, 3, heights = grid::unit(c(1, 9), "null"))))

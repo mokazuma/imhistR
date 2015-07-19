@@ -4,7 +4,8 @@
 \alias{lrgbhist}
 \title{Provide image Luminance & RGB histgram}
 \usage{
-lrgbhist(input, mode = "file", hist = "histgram", resize = FALSE)
+lrgbhist(input, mode = "file", hist = "histgram", resize = FALSE,
+  endoff = FALSE)
 }
 \arguments{
 \item{input}{Set file, folder or url for image analysis corresponding to mode parameter.}
@@ -16,6 +17,8 @@ Also this parameter is used for output name when you use folder or scraping mode
 
 \item{resize}{This argument is important to process many image histgram fastly. If you set resize=1/4, the speed of drawing histgram is dramatically up although output values are approximation.
 Resize is recommended when you use folder mode and want to get many histgram.}
+
+\item{endoff}{If you want to get rid of image borders extreme value (white or black frame), you set this parameter TRUE.}
 }
 \value{
 image histgram and thier descriptive stastics (Luminance & RGB). Folder and scraping mode provide a pdf file.
@@ -30,7 +33,7 @@ Calculate mean, sd, skewness, and kurtsis for each histgram.
 originaidir <- getwd()  # get current dir
 setwd(system.file("img", package="imhistR"))  # set analysis dir
 lrgbhist("Newlogo.png")
-setwd(getwd())  # set original dir
+setwd(originaidir)  # set original dir
 
 # lrgbhist("yourfile.jpg")  # you can simply use like this.
 
@@ -45,13 +48,13 @@ lrgbhist(input=url, mode="url")
 # Althogh the type of these images is limited ".jpg" or ".png", both type files in a folder can analyze one command.
 lrgbhist(input=setwd(system.file("img", package="imhistR")), mode="folder", hist="Rlogo")
 
-# Resize give fast drawing of histgram. Compressed method is kernel. Japanese file name is not correct rendering.
+# Resize give fast drawing of histgram. Compressed method is kernel.
 lrgbhist(input="folder name of iphone picture", mode="folder", hist="iphoneImg", resize=1/4)
 
 
 # Web scraping from google image search is conducted by scraping mode. Twenty images were automatically downloaded and analyzed.
 # So many scraping should avoid in order to conform web manner.
-url <- "url from google image search of xxx"  # This package cannot provide the way to scraping other web pages
+url <- "url from google image search of xxx"  # This package does not provide the way to scraping other web pages
 lrgbhist(input=url, mode="scraping", hist="xxx")
 }
 

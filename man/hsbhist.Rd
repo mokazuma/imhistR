@@ -4,33 +4,57 @@
 \alias{hsbhist}
 \title{Provide image HSB(HSV) color space histgram}
 \usage{
-hsbhist(input, mode = "file", hist = "histgram", resize = FALSE)
+hsbhist(input, mode = "file", hist = "histgram", resize = FALSE,
+  endoff = FALSE)
 }
 \arguments{
 \item{input}{Set file, folder or url for image analysis corresponding to mode parameter.}
 
 \item{mode}{Select a mode in all four modes. Modes are "file"(default), "url", "folder", and "scraping".}
 
-\item{hist}{Whether histgram draw or not. Dafult is draw. However, you should set FALSE when you want fast computation.
+\item{hist}{Whether histgram draw or not. Dafult is draw. However, you should set FALSE when you want fast computation for images of digital camera and smartphone. Rendering of ggplot2 is so long for these large pixels image.
 Also this parameter is used for output name when you use folder or scraping mode (Default output name is "histgram").}
 
-\item{resize}{file}
+\item{resize}{This argument is important to process many image histgram fastly. If you set resize=1/4, the speed of drawing histgram is dramatically up although output values are approximation.
+Resize is recommended when you use folder mode and want to get many histgram.}
+
+\item{endoff}{If you want to get rid of image borders extreme value (white or black frame), you set this parameter TRUE.}
 }
 \value{
-image histgram and thier descriptive stastics (HSB color space). Range of all values are 0-1.
+image histgram and thier descriptive stastics (HSB color space). Folder and scraping mode provide a pdf file.
+Range of all values are 0-1.
 }
 \description{
 Analysis an image from .jpg or .png file. Draw Hue, Saturation, and Brightness(Value) color space histgram of pixel in ggplot2. HSB color space computed from RGB value.
 Calculate mean, sd, skewness, and kurtsis for each histgram.
 }
 \examples{
-# Simple use is only set input image file.
-hsbhist(system.file("img", "newlogo.png", package="imhistR"))
-# hsbhist("img.png")  # you can use like this.
+# Simple use is only set input a image file name. Japanese file name is accepted.
+originaidir <- getwd()  # get current dir
+setwd(system.file("img", package="imhistR"))  # set analysis dir
+hsbhist("Newlogo.png")
+setwd(originaidir)  # set original dir
+
+# hsbhist("yourfile.jpg")  # you can simply use like this.
+
 
 # Url mode needs to input image URL.
 # Only URL tail ".jpg" or ".png" can analysis.
 url <- "http://www.r-project.org/Rlogo.png"
-hsbhist(url, mode="url")
+hsbhist(input=url, mode="url")
+
+
+# If you have a image folder in your PC, easily analyze all images by using folder mode.
+# Althogh the type of these images is limited ".jpg" or ".png", both type files in a folder can analyze one command.
+hsbhist(input=setwd(system.file("img", package="imhistR")), mode="folder", hist="Rlogo")
+
+# Resize give fast drawing of histgram. Compressed method is kernel.
+hsbhist(input="folder name of iphone picture", mode="folder", hist="iphoneImg", resize=1/4)
+
+
+# Web scraping from google image search is conducted by scraping mode. Twenty images were automatically downloaded and analyzed.
+# So many scraping should avoid in order to conform web manner. If you already scraping image by other function of this package, you should use folder mode.
+url <- "url from google image search of xxx"  # This package does not provide the way to scraping other web pages
+hsbhist(input=url, mode="scraping", hist="xxx")
 }
 

@@ -9,6 +9,7 @@
 #' Also this parameter is used for output name when you use folder or scraping mode (Default output name is "histgram").
 #' @param resize This argument is important to process many image histgram fastly. If you set resize=1/4, the speed of drawing histgram is dramatically up although output values are approximation.
 #' Resize is recommended when you use folder mode and want to get many histgram.
+#' @param endoff If you want to get rid of image borders extreme value (white or black frame), you set this parameter TRUE.
 #'
 #' @return image histgram and thier descriptive stastics (HSB color space). Folder and scraping mode provide a pdf file.
 #' Range of all values are 0-1.
@@ -41,12 +42,12 @@
 #'
 #' # Web scraping from google image search is conducted by scraping mode. Twenty images were automatically downloaded and analyzed.
 #' # So many scraping should avoid in order to conform web manner. If you already scraping image by other function of this package, you should use folder mode.
-#' url <- "url from google image search of xxx"  # This package cannot provide the way to scraping other web pages
+#' url <- "url from google image search of xxx"  # This package does not provide the way to scraping other web pages
 #' hsbhist(input=url, mode="scraping", hist="xxx")
 #'
 #'
 
-hsbhist <- function(input, mode="file", hist="histgram", resize=FALSE) {
+hsbhist <- function(input, mode="file", hist="histgram", resize=FALSE, endoff=FALSE) {
   ##### set print
   if((hist!=FALSE && mode=="folder") || (hist!=FALSE && mode=="scraping")) {
     Cairo::CairoPDF(paste0(hist,".pdf"), paper="a4r", width=11.69, height=8.27)
@@ -100,7 +101,7 @@ hsbhist <- function(input, mode="file", hist="histgram", resize=FALSE) {
         }
         if(type==".jpg" || type==".jpeg")   img <- jpeg::readJPEG(datfil[f])
         if(type==".png")                    img <- png::readPNG(datfil[f])
-        ##### thumbnail rescale (under 9000 pixel)
+        ##### thumbnail rescale (under 90000 pixel)
         dim1 <- dim(img)[1]; dim2 <- dim(img)[2]
         if(dim1>300 && dim2>300) {
           while(dim1 > 200)  dim1 <- dim1 / 2
@@ -144,13 +145,17 @@ hsbhist <- function(input, mode="file", hist="histgram", resize=FALSE) {
         for(i in 1:3) {
           ###### stastics
           imgdat <- tidyr::gather(data.frame(dat[,,i]), pixel, value)
-          imgdat <- dplyr::filter(imgdat, dplyr::between(value, 0.01, 0.99))
-          imgsta <- c(as.numeric(unlist(dplyr::summarise(imgdat, mean(value), sd(value)))),
-                      e1071::skewness(imgdat$value, type=2), e1071::kurtosis(imgdat$value, type=2))
+          if((endoff) && (i!=1)) {
+            imgval <- imgdat$value[(0.01 <imgdat$value) & (imgdat$value < 0.99)]
+          } else {
+            imgval <- imgdat$value
+          }
+          imgsta <- c(mean(imgval), sd(imgval), e1071::skewness(imgval, type=2), e1071::kurtosis(imgval, type=2))
           imgall <- c(imgall, imgsta)
           if(i==1) {
-            modecol <- dplyr::summarise(dplyr::group_by(imgdat, pixel), M=mean(value))
-            modecol <- max(dplyr::select(modecol, M))
+            dist <- table(cut(imgval, seq(0, 1, 1/70)), imgval)
+            maxdist <- as.numeric(which.max(rowSums(dist)))
+            maxhue <- ((1/70 * maxdist) + (1/70 * (maxdist-1))) / 2
           }
           ##### histgram
           if(hist!=FALSE) {
@@ -163,8 +168,8 @@ hsbhist <- function(input, mode="file", hist="histgram", resize=FALSE) {
               ggplot2::ggtitle(paste0("Mean = ",round(imgsta[1],2), ", SD = ",round(imgsta[2],2), "   ",
                                       "\nSkew = ",round(imgsta[3],2), ", Kurt = ",round(imgsta[4],2)))
             if     (i==1)  g <- g + ggplot2::scale_fill_gradientn(colours=pals, breaks=leg, labels=leg, limits=c(0, 1))
-            else if(i==2)  g <- g + ggplot2::scale_fill_gradient(low=hsv(modecol, 0, v), high=hsv(modecol, 1, v), breaks=leg, labels=leg)
-            else           g <- g + ggplot2::scale_fill_gradient(low=hsv(modecol, 1, 0), high=hsv(modecol, 1, 1), breaks=leg, labels=leg)
+            else if(i==2)  g <- g + ggplot2::scale_fill_gradient(low=hsv(maxhue, 0, v), high=hsv(maxhue, 1, v), breaks=leg, labels=leg)
+            else           g <- g + ggplot2::scale_fill_gradient(low=hsv(maxhue, 1, 0), high=hsv(maxhue, 1, 1), breaks=leg, labels=leg)
             if((dim(dat)[1]*dim(dat)[2]) > 1e+06) {
               g <- g + ggplot2::scale_y_continuous(labels=scales::scientific_format())
             } else {
