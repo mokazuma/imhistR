@@ -7,7 +7,7 @@
 hsbhist(input, mode = "file", hist = "histgram", resize = FALSE)
 }
 \arguments{
-\item{input}{Set file, folder or url for analysis corresponding to mode parameter.}
+\item{input}{Set file, folder or url for image analysis corresponding to mode parameter.}
 
 \item{mode}{Select a mode in all four modes. Modes are "file"(default), "url", "folder", and "scraping".}
 
@@ -17,10 +17,10 @@ Also this parameter is used for output name when you use folder or scraping mode
 \item{resize}{file}
 }
 \value{
-image histgram and thier descriptive stastics (HSB color space)
+image histgram and thier descriptive stastics (HSB color space). Range of all values are 0-1.
 }
 \description{
-Analysis an image from .jpg or .png file. Draw Hue or saturation or brightness(value) color space histgram of pixel.
+Analysis an image from .jpg or .png file. Draw Hue, Saturation, and Brightness(Value) color space histgram of pixel in ggplot2. HSB color space computed from RGB value.
 Calculate mean, sd, skewness, and kurtsis for each histgram.
 }
 \examples{

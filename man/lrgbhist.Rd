@@ -7,30 +7,51 @@
 lrgbhist(input, mode = "file", hist = "histgram", resize = FALSE)
 }
 \arguments{
-\item{input}{Set file, folder or url for analysis corresponding to mode parameter.}
+\item{input}{Set file, folder or url for image analysis corresponding to mode parameter.}
 
 \item{mode}{Select a mode in all four modes. Modes are "file"(default), "url", "folder", and "scraping".}
 
-\item{hist}{Whether histgram draw or not. Dafult is draw. However, you should set FALSE when you want fast computation.
+\item{hist}{Whether histgram draw or not. Dafult is draw. However, you should set FALSE when you want fast computation for images of digital camera and smartphone. Rendering of ggplot2 is so long for these large pixels image.
 Also this parameter is used for output name when you use folder or scraping mode (Default output name is "histgram").}
 
-\item{resize}{file}
+\item{resize}{This argument is important to process many image histgram fastly. If you set resize=1/4, the speed of drawing histgram is dramatically up although output values are approximation.
+Resize is recommended when you use folder mode and want to get many histgram.}
 }
 \value{
-image histgram and thier descriptive stastics (Luminance & RGB)
+image histgram and thier descriptive stastics (Luminance & RGB). Folder and scraping mode provide a pdf file.
+Range of all values are 0-1. Mathematical formula of luminance is 0.298912*red + 0.586611*green + 0.114478*blue.
 }
 \description{
-Analysis an image from .jpg or .png file. Draw luminance, read, blue, and green histgram of pixel.
+Analysis an image from .jpg or .png file. Draw luminance, read, blue, and green histgram of pixel in ggplot2.
 Calculate mean, sd, skewness, and kurtsis for each histgram.
 }
 \examples{
-# Simple use is only set input image file.
-lrgbhist(system.file("img", "newlogo.png", package="imhistR"))
-# lrgbhist("img.png")  # you can use like this.
+# Simple use is only set input a image file name. Japanese file name is accepted.
+originaidir <- getwd()  # get current dir
+setwd(system.file("img", package="imhistR"))  # set analysis dir
+lrgbhist("Newlogo.png")
+setwd(getwd())  # set original dir
+
+# lrgbhist("yourfile.jpg")  # you can simply use like this.
+
 
 # Url mode needs to input image URL.
 # Only URL tail ".jpg" or ".png" can analysis.
 url <- "http://www.r-project.org/Rlogo.png"
-lrgbhist(url, mode="url")
+lrgbhist(input=url, mode="url")
+
+
+# If you have a image folder in your PC, easily analyze all images by using folder mode.
+# Althogh the type of these images is limited ".jpg" or ".png", both type files in a folder can analyze one command.
+lrgbhist(input=setwd(system.file("img", package="imhistR")), mode="folder", hist="Rlogo")
+
+# Resize give fast drawing of histgram. Compressed method is kernel. Japanese file name is not correct rendering.
+lrgbhist(input="folder name of iphone picture", mode="folder", hist="iphoneImg", resize=1/4)
+
+
+# Web scraping from google image search is conducted by scraping mode. Twenty images were automatically downloaded and analyzed.
+# So many scraping should avoid in order to conform web manner.
+url <- "url from google image search of xxx"  # This package cannot provide the way to scraping other web pages
+lrgbhist(input=url, mode="scraping", hist="xxx")
 }
 

@@ -1,27 +1,48 @@
 #' Provide image HSB(HSV) color space histgram
 #'
-#' Analysis an image from .jpg or .png file. Draw Hue or saturation or brightness(value) color space histgram of pixel.
+#' Analysis an image from .jpg or .png file. Draw Hue, Saturation, and Brightness(Value) color space histgram of pixel in ggplot2. HSB color space computed from RGB value.
 #' Calculate mean, sd, skewness, and kurtsis for each histgram.
 #'
-#' @param input Set file, folder or url for analysis corresponding to mode parameter.
+#' @param input Set file, folder or url for image analysis corresponding to mode parameter.
 #' @param mode Select a mode in all four modes. Modes are "file"(default), "url", "folder", and "scraping".
-#' @param hist Whether histgram draw or not. Dafult is draw. However, you should set FALSE when you want fast computation.
+#' @param hist Whether histgram draw or not. Dafult is draw. However, you should set FALSE when you want fast computation for images of digital camera and smartphone. Rendering of ggplot2 is so long for these large pixels image.
 #' Also this parameter is used for output name when you use folder or scraping mode (Default output name is "histgram").
-#' @param resize file
+#' @param resize This argument is important to process many image histgram fastly. If you set resize=1/4, the speed of drawing histgram is dramatically up although output values are approximation.
+#' Resize is recommended when you use folder mode and want to get many histgram.
 #'
-#' @return image histgram and thier descriptive stastics (HSB color space)
+#' @return image histgram and thier descriptive stastics (HSB color space). Folder and scraping mode provide a pdf file.
+#' Range of all values are 0-1.
 #'
 #' @export
 #'
 #' @examples
-#' # Simple use is only set input image file.
-#' hsbhist(system.file("img", "newlogo.png", package="imhistR"))
-#' # hsbhist("img.png")  # you can use like this.
+#' # Simple use is only set input a image file name. Japanese file name is accepted.
+#' originaidir <- getwd()  # get current dir
+#' setwd(system.file("img", package="imhistR"))  # set analysis dir
+#' hsbhist("Newlogo.png")
+#' setwd(originaidir)  # set original dir
+#'
+#' # hsbhist("yourfile.jpg")  # you can simply use like this.
+#'
 #'
 #' # Url mode needs to input image URL.
 #' # Only URL tail ".jpg" or ".png" can analysis.
 #' url <- "http://www.r-project.org/Rlogo.png"
-#' hsbhist(url, mode="url")
+#' hsbhist(input=url, mode="url")
+#'
+#'
+#' # If you have a image folder in your PC, easily analyze all images by using folder mode.
+#' # Althogh the type of these images is limited ".jpg" or ".png", both type files in a folder can analyze one command.
+#' hsbhist(input=setwd(system.file("img", package="imhistR")), mode="folder", hist="Rlogo")
+#'
+#' # Resize give fast drawing of histgram. Compressed method is kernel.
+#' hsbhist(input="folder name of iphone picture", mode="folder", hist="iphoneImg", resize=1/4)
+#'
+#'
+#' # Web scraping from google image search is conducted by scraping mode. Twenty images were automatically downloaded and analyzed.
+#' # So many scraping should avoid in order to conform web manner. If you already scraping image by other function of this package, you should use folder mode.
+#' url <- "url from google image search of xxx"  # This package cannot provide the way to scraping other web pages
+#' hsbhist(input=url, mode="scraping", hist="xxx")
 #'
 #'
 
@@ -161,7 +182,7 @@ hsbhist <- function(input, mode="file", hist="histgram", resize=FALSE) {
           print(p[[2]], vp = grid::viewport(layout.pos.row = 2, layout.pos.col = 2))
           print(p[[3]], vp = grid::viewport(layout.pos.row = 2, layout.pos.col = 3))
           grid::grid.text(datfil[f], vp=grid::viewport(layout.pos.row=1, layout.pos.col=2:3),
-                          gp=grid::gpar(fontsize=35))
+                          gp=grid::gpar(fontsize=35, fontfamily = "Meiryo"))
           grid::pushViewport(grid::viewport(layout.pos.row=1, layout.pos.col=1, just=c('centre','top')))
           grid::grid.draw(grid::rasterGrob(imgp, interpolate=TRUE))
         }

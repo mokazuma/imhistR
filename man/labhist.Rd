@@ -7,7 +7,7 @@
 labhist(input, mode = "file", hist = "histgram", resize = FALSE)
 }
 \arguments{
-\item{input}{Set file, folder or url for analysis corresponding to mode parameter.}
+\item{input}{Set file, folder or url for image analysis corresponding to mode parameter.}
 
 \item{mode}{Select a mode in all four modes. Modes are "file"(default), "url", "folder", and "scraping".}
 
@@ -17,10 +17,11 @@ Also this parameter is used for output name when you use folder or scraping mode
 \item{resize}{file}
 }
 \value{
-image histgram and thier descriptive stastics (Lab color space)
+image histgram and thier descriptive stastics (Lab color space). L range is 0-100. A and b range are -110-110.
+Transform Lab from RGB are based on ITU-R BT 709, using the D65 white point reference.
 }
 \description{
-Analysis an image from .jpg or .png file. Draw L or a or b color space histgram of pixel.
+Analysis an image from .jpg or .png file. Draw L(luminance), a(green-magenta) and b(blue-yellow) color space histgram of pixel in ggplot2. Lab color space computed from RGB value.
 Calculate mean, sd, skewness, and kurtsis for each histgram.
 }
 \examples{
