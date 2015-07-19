@@ -1,33 +1,20 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-dplyr
-=====
+imhistR
+=======
 
-[![Build Status](https://travis-ci.org/hadley/dplyr.png?branch=master)](https://travis-ci.org/hadley/dplyr)
+imhistR is the easy image processing tool. This package can focussed for luminance, RGB, Lab, and HSB(HSV) with image. It motivated to visualization image luminance and color space. It have two main goals:
 
-dplyr is the next iteration of plyr, focussed on tools for working with data frames (hence the `d` in the name). It has three main goals:
+-   Draw image histgramn easily in R.
 
--   Identify the most important data manipulation tools needed for data analysis and make them easy to use from R.
+-   Calculate descriptive stastics (Mean, SD, Skew, Kurtsis) by one command.
 
--   Provide blazing fast performance for in-memory data by writing key pieces in [C++](http://www.rcpp.org/).
+Install:
 
--   Use the same interface to work with data no matter where it's stored, whether in a data frame, a data table or database.
-
-You can install:
-
--   the latest released version from CRAN with
-
-    ``` r
-    install.packages("dplyr")
-    ```
-
--   the latest development version from github with
+-   the latest development version get from github with
 
     ``` r
     if (packageVersion("devtools") < 1.6) {
       install.packages("devtools")
     }
-    devtools::install_github("hadley/lazyeval")
-    devtools::install_github("hadley/dplyr")
+    devtools::install_github("mokazuma/imhistR")
     ```
-
-You'll probably also want to install the data packages used in most examples: `install.packages(c("nycflights13", "Lahman"))`.
