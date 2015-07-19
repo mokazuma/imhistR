@@ -5,7 +5,7 @@
 \title{Provide image Luminance & RGB histgram}
 \usage{
 lrgbhist(input, mode = "file", hist = "histgram", resize = FALSE,
-  endoff = FALSE)
+  endoff = TRUE)
 }
 \arguments{
 \item{input}{Set file, folder or url for image analysis corresponding to mode parameter.}
@@ -18,7 +18,7 @@ Also this parameter is used for output name when you use url, folder or scraping
 \item{resize}{This argument is important to process many image histgram fastly. If you set resize=1/4, the speed of drawing histgram is dramatically up although output values are approximation.
 Resize is recommended when you use folder mode and want to get many histgram.}
 
-\item{endoff}{If you want to get rid of image borders extreme value (white or black frame), you set this parameter TRUE.}
+\item{endoff}{If you want to get include of image borders extreme value (white or black frame), you set this parameter FALSE.}
 }
 \value{
 image histgram and thier descriptive stastics (Luminance & RGB). Folder and scraping mode provide a pdf file.
@@ -41,7 +41,7 @@ setwd(originaidir)  # set original dir
 # Url mode needs to input image URL.
 # Only URL tail ".jpg" or ".png" can analyze.
 url <- "http://www.r-project.org/Rlogo.png"
-lrgbhist(input=url, mode="url", endoff=TRUE)
+lrgbhist(input=url, mode="url", hist="Rlogo")
 
 
 # If you have a image folder in your PC, easily analyze all images by using folder mode.
