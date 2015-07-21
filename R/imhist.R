@@ -5,6 +5,6 @@
 #'
 #' @name imhistR
 #' @docType package
-#' @import Cairo downloader e1071 ggplot2 grid jpeg mmand png rvest scales tidyr
+#' @import Cairo downloader e1071 ggplot2 grid jpeg mmand patchPlot png rvest scales tidyr
 NULL
 

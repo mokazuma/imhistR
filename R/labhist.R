@@ -9,7 +9,7 @@
 #' Also this parameter is used for output name when you use url, folder or scraping mode (Default output name is "histgram").
 #' @param resize This argument is important to process many image histgram fastly. If you set resize=1/4, the speed of drawing histgram is dramatically up although output values are approximation.
 #' Resize is recommended when you use folder mode and want to get many histgram.
-#' @param endoff If you want to get include of image borders extreme value (white or black frame), you set this parameter FALSE.
+#' @param endoff If you want to get rid of image borders extreme value (white or black frame), you set this parameter TRUE.
 #'
 #' @return image histgram and thier descriptive stastics (Lab color space). Folder and scraping mode provide a pdf file.
 #' L range is 0-100. A and b range are -110-110. Transform Lab from RGB are based on ITU-R BT 709, using the D65 white point reference.
@@ -17,7 +17,7 @@
 #' @export
 #'
 #' @examples
-#' # Simple use is only set input a image file name. Japanese file name is accepted.
+#' # Simple use is only set input an image file name. Japanese file name is accepted.
 #' originaidir <- getwd()  # get current dir
 #' setwd(system.file("img", package="imhistR"))  # set analysis dir
 #' labhist("Newlogo.png")
@@ -29,10 +29,10 @@
 #' # Url mode needs to input image URL.
 #' # Only URL tail ".jpg" or ".png" can analyze.
 #' url <- "http://www.r-project.org/Rlogo.png"
-#' labhist(input=url, mode="url", hist="Rlogo")
+#' labhist(input=url, mode="url", hist="Rlogo", endoff=TRUE)
 #'
 #'
-#' # If you have a image folder in your PC, easily analyze all images by using folder mode.
+#' # If you have an image folder in your PC, easily analyze all images by using folder mode.
 #' # Althogh the type of these images is limited ".jpg" or ".png", both type files in a folder can analyze one command.
 #' labhist(input=setwd(system.file("img", package="imhistR")), mode="folder", hist="Rlogo")
 #'
@@ -47,7 +47,7 @@
 #'
 #'
 
-labhist <- function(input, mode="file", hist="histgram", resize=FALSE, endoff=TRUE) {
+labhist <- function(input, mode="file", hist="histgram", resize=FALSE, endoff=FALSE) {
   ##### set print
   if((hist!=FALSE && mode=="folder") || (hist!=FALSE && mode=="scraping")) {
     Cairo::CairoPDF(paste0(hist,".pdf"), paper="a4r", width=11.69, height=8.27)
@@ -62,8 +62,9 @@ labhist <- function(input, mode="file", hist="histgram", resize=FALSE, endoff=TR
       if(mode=="file") {
         datfil <- input; filNum <- 1
       } else if(mode=="folder") {
-        datfil <- c(list.files(path=input, pattern=".jpg"), list.files(path=input, pattern=".png"),
-                    list.files(path=input, pattern=".jpeg") )
+        datfil <- c(list.files(path=input, full.names=TRUE, pattern=".jpg"),
+                    list.files(path=input, full.names=TRUE, pattern=".png"),
+                    list.files(path=input, full.names=TRUE, pattern=".jpeg") )
         filNum <- length(datfil)
       } else if(mode=="url") {
         downloader::download(input, paste0(current, "/", hist, type), mode="wb")
@@ -146,8 +147,7 @@ labhist <- function(input, mode="file", hist="histgram", resize=FALSE, endoff=TR
           imgdat <- tidyr::gather(data.frame(dat[,,i]), pixel, value)
           if(endoff) {
             if(i==1)   imgval <- imgdat$value[(1 < imgdat$value) & (imgdat$value < 99)]
-            if(i==2)   imgval <- imgdat$value[(imgdat$value > -1) & (1 < imgdat$value)]
-            if(i==3)   imgval <- imgdat$value[(imgdat$value > -1) & (1 < imgdat$value)]
+            else       imgval <- c(imgdat$value[imgdat$value < -1], imgdat$value[imgdat$value > 1])
           } else {
             imgval <- imgdat$value
           }

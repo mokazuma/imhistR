@@ -18,6 +18,7 @@ Imports:
   grid,
   jpeg,
   mmand,
+  patchPlot,
   png,
   rvest,
   scales,

@@ -4,9 +4,9 @@ imhistR
 
 imhistR is the easy image processing tool. This package focussed for luminance, RGB, Lab, and HSB(HSV) with image. It motivated to visualize image luminance and color space. It have two main goals:
 
--   Draw image histgramn quickly in R.
+-   Draw an image histgramn quickly in R.
 
--   Calculate descriptive stastics (Mean, SD, Skew, Kurtsis) by one command.
+-   Calculate descriptive stastics (Mean, SD, Skewness, Kurtsis) by one command.
 
 Install:
 
@@ -26,4 +26,4 @@ Install:
     lrgbhist(input="http://www.ess.ic.kanagawa-it.ac.jp/std_img/colorimage/Lenna.jpg", mode="url", hist="Lenna")
     ```
 
-You get image histgram and their descriptive stastics.
+You get an image histgram and their descriptive stastics.

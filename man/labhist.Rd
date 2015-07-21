@@ -5,7 +5,7 @@
 \title{Provide image Lab color space histgram}
 \usage{
 labhist(input, mode = "file", hist = "histgram", resize = FALSE,
-  endoff = TRUE)
+  endoff = FALSE)
 }
 \arguments{
 \item{input}{Set file, folder or url for image analysis corresponding to mode parameter.}
@@ -18,7 +18,7 @@ Also this parameter is used for output name when you use url, folder or scraping
 \item{resize}{This argument is important to process many image histgram fastly. If you set resize=1/4, the speed of drawing histgram is dramatically up although output values are approximation.
 Resize is recommended when you use folder mode and want to get many histgram.}
 
-\item{endoff}{If you want to get include of image borders extreme value (white or black frame), you set this parameter FALSE.}
+\item{endoff}{If you want to get rid of image borders extreme value (white or black frame), you set this parameter TRUE.}
 }
 \value{
 image histgram and thier descriptive stastics (Lab color space). Folder and scraping mode provide a pdf file.
@@ -29,7 +29,7 @@ Analysis an image from .jpg or .png file. Draw L(luminance), a(green-magenta) an
 Calculate mean, sd, skewness, and kurtsis for each histgram.
 }
 \examples{
-# Simple use is only set input a image file name. Japanese file name is accepted.
+# Simple use is only set input an image file name. Japanese file name is accepted.
 originaidir <- getwd()  # get current dir
 setwd(system.file("img", package="imhistR"))  # set analysis dir
 labhist("Newlogo.png")
@@ -41,10 +41,10 @@ setwd(originaidir)  # set original dir
 # Url mode needs to input image URL.
 # Only URL tail ".jpg" or ".png" can analyze.
 url <- "http://www.r-project.org/Rlogo.png"
-labhist(input=url, mode="url", hist="Rlogo")
+labhist(input=url, mode="url", hist="Rlogo", endoff=TRUE)
 
 
-# If you have a image folder in your PC, easily analyze all images by using folder mode.
+# If you have an image folder in your PC, easily analyze all images by using folder mode.
 # Althogh the type of these images is limited ".jpg" or ".png", both type files in a folder can analyze one command.
 labhist(input=setwd(system.file("img", package="imhistR")), mode="folder", hist="Rlogo")
 
