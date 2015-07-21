@@ -2,7 +2,7 @@
 imhistR
 =======
 
-imhistR is the easy image processing tool. This package focussed for luminance, RGB, Lab, and HSB(HSV) with image. It motivated to visualize image luminance and color space. It have two main goals:
+imhistR is the easy image processing tool. This package focussed for luminance, RGB, Lab, and HSB(HSV) with image. It motivated to visualize image color information. It have two main goals:
 
 -   Draw an image histgramn quickly in R.
 
