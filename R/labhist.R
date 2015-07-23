@@ -54,21 +54,21 @@ labhist <- function(input, mode="file", hist="histgram", resize=FALSE, endoff=FA
   }
   tryCatch(
     { ##### set input type
-      if(grepl(".jpg",  input, fixed = TRUE))   type <- ".jpg"
-      if(grepl(".jpeg", input, fixed = TRUE))   type <- ".jpeg"
-      if(grepl(".png",  input, fixed = TRUE))   type <- ".png"
+      if(grepl(".jpg",  tolower(input), fixed=TRUE))   filetype <- ".jpg"
+      if(grepl(".jpeg", tolower(input), fixed=TRUE))   filetype <- ".jpeg"
+      if(grepl(".png",  tolower(input), fixed=TRUE))   filetype <- ".png"
       ##### set mode: file, url, dir, scraping
       current <- getwd()
       if(mode=="file") {
         datfil <- input; filNum <- 1
-      } else if(mode=="folder") {
-        datfil <- c(list.files(path=input, full.names=TRUE, pattern=".jpg"),
-                    list.files(path=input, full.names=TRUE, pattern=".png"),
-                    list.files(path=input, full.names=TRUE, pattern=".jpeg") )
-        filNum <- length(datfil)
       } else if(mode=="url") {
-        downloader::download(input, paste0(current, "/", hist, type), mode="wb")
-        datfil <- paste0(hist, type); filNum <- 1
+        downloader::download(input, paste0(current, "/", hist, filetype), mode="wb")
+        datfil <- paste0(hist, filetype); filNum <- 1
+      } else if(mode=="folder") {
+        datfil <- c(dir(path=input, full.names=TRUE, ignore.case=TRUE, pattern=".jpg"),
+                    dir(path=input, full.names=TRUE, ignore.case=TRUE, pattern=".jpeg"),
+                    dir(path=input, full.names=TRUE, ignore.case=TRUE, pattern=".png") )
+        filNum <- length(datfil)
       } else if(mode=="scraping") {
         type <- ".jpg"
         if (!file.exists(paste0(current, "/", mode)))  dir.create(mode)     # folder check
@@ -88,6 +88,8 @@ labhist <- function(input, mode="file", hist="histgram", resize=FALSE, endoff=FA
 
       ##### main loop
       savedat <- matrix(0, nrow = filNum, ncol = 12)
+      if(mode=="folder")  title <- gsub(paste0(input,"/"), "", datfil)
+      else                title <- datfil
       for(f in 1:filNum) {
         if(mode=="folder" || mode=="scraping") {
           cat(paste0("Processing ", datfil[f], "(", f, "/", filNum, ")", "...\n"))
@@ -95,12 +97,16 @@ labhist <- function(input, mode="file", hist="histgram", resize=FALSE, endoff=FA
         ##### read dat
         if(mode=="scraping")  setwd(paste0(current, "/scraping"))
         if(mode=="folder") {
-          if(grepl(".jpg", datfil[f], fixed = TRUE))   type <- ".jpg"
-          if(grepl(".jpeg", datfil[f], fixed = TRUE))  type <- ".jpeg"
-          if(grepl(".png", datfil[f], fixed = TRUE))   type <- ".png"
+          if(grepl(".jpg",  tolower(datfil[f]), fixed=TRUE))  filetype <- ".jpg"
+          if(grepl(".jpeg", tolower(datfil[f]), fixed=TRUE))  filetype <- ".jpeg"
+          if(grepl(".png",  tolower(datfil[f]), fixed=TRUE))  filetype <- ".png"
         }
-        if(type==".jpg" || type==".jpeg")   img <- jpeg::readJPEG(datfil[f])
-        if(type==".png")                    img <- png::readPNG(datfil[f])
+        if(filetype==".jpg" || filetype==".jpeg" || filetype==".JPG" || filetype==".JPEG") {
+          img <- jpeg::readJPEG(datfil[f])
+        }
+        if(filetype==".png" || filetype==".PNG" ) {
+          img <- png::readPNG(datfil[f])
+        }
         if(mode=="url")  file.remove(datfil[f])
         ##### thumbnail rescale (under 90000 pixel)
         dim1 <- dim(img)[1]; dim2 <- dim(img)[2]
@@ -182,8 +188,9 @@ labhist <- function(input, mode="file", hist="histgram", resize=FALSE, endoff=FA
           print(p[[1]] + ggplot2::xlim(0, 100),    vp=grid::viewport(layout.pos.row=2, layout.pos.col=1))
           print(p[[2]] + ggplot2::xlim(-110, 110), vp=grid::viewport(layout.pos.row=2, layout.pos.col=2))
           print(p[[3]] + ggplot2::xlim(-110, 110), vp=grid::viewport(layout.pos.row=2, layout.pos.col=3))
-          grid::grid.text(datfil[f], vp=grid::viewport(layout.pos.row=1, layout.pos.col=2:3),
-                          gp=grid::gpar(fontsize=35, fontfamily = "Meiryo"))
+          windowsFonts(MEI = windowsFont("Meiryo"))
+          grid::grid.text(title[f], vp=grid::viewport(layout.pos.row=1, layout.pos.col=2:3),
+                          gp=grid::gpar(fontsize=35), fontfamily="MEI")
           grid::pushViewport(grid::viewport(layout.pos.row=1, layout.pos.col=1, just=c('centre','top')))
           grid::grid.draw(grid::rasterGrob(imgp, interpolate=TRUE))
         }
@@ -192,7 +199,7 @@ labhist <- function(input, mode="file", hist="histgram", resize=FALSE, endoff=FA
       colnames(savedat) <- c("Mean_L*dim.", "SD_L*dim.", "Skew_L*dim.", "Kurt_L*dim.",
                              "Mean_A*dim.", "SD_A*dim.", "Skew_A*dim.", "Kurt_A*dim.",
                              "Mean_B*dim.", "SD_B*dim.", "Skew_B*dim.", "Kurt_B*dim.")
-      row.names(savedat) <- datfil
+      row.names(savedat) <- title
       if((hist!=FALSE && mode=="folder") || (hist!=FALSE && mode=="scraping")) {
         dev.off()
         cat(paste0(hist, ".pdf in ", current, "\n"))  # return message and dat
@@ -201,7 +208,7 @@ labhist <- function(input, mode="file", hist="histgram", resize=FALSE, endoff=FA
     },
     ##### error processing
     error = function(e) {
-      message("Error has occurred. Please change some parameters")
+      message("!! Error has occurred. Please change some parameters")
       message(e)
       if(hist!=FALSE && mode=="folder" || mode=="scraping")  dev.off()
     },
