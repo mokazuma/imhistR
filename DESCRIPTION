@@ -1,11 +1,11 @@
 Package: imhistR
 Type: Package
-Title: Analysis of image histgram
+Title: Analysis of image histogram
 Version: 0.1
-Date: 2015-07-18
+Date: 2015-07-25
 Author: Kazuma Mori
 Maintainer: Kazuma Mori <deracine83.54@gmail.com>
-Description: Tools to analyze image file(.jpg and .png). It's designed specifically for getting image histgram and their descriptive statistics.
+Description: Tools to analyze image file(.bmp, .jpg and .png). It's designed specifically for getting image histogram and their descriptive statistics.
 URL: https://github.com/mokazuma/imhistR
 BugReports: https://github.com/mokazuma/imhistR/issues
 License: GPL (>=2)

@@ -16,14 +16,14 @@ knitr::opts_chunk$set(
 
 # imhistR
 
-imhistR is the easy image processing tool. This package focussed for luminance, RGB, Lab, and HSB(HSV) with image. 
+imhistR is the easy image processing tool. This package focussed for Luminance, RGB, Lab, and HSB(HSV) with image. 
 It motivated to visualize image color information. 
 
 It have two main goals:
 
-* Draw an image histgramn quickly in R.
+* Draw an image histogram quickly in R.
 
-* Calculate descriptive stastics (Mean, SD, Skewness, Kurtsis) by one command.
+* Calculate their descriptive stastics (Mean, SD, Skewness, Kurtsis) by one command.
 
 Install:
 

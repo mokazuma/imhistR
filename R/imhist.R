@@ -1,7 +1,7 @@
 #'
 #' imhistR
 #'
-#' Analysis of image histgram
+#' Analysis of image histogram
 #'
 #' @name imhistR
 #' @docType package

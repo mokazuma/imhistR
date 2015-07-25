@@ -1,21 +1,21 @@
-#' Provide image HSB(HSV) color space histgram
+#' Provide image HSB(HSV) color space histogram
 #'
-#' Analysis an image from .bmp, .jpg(.jpeg) and .png file. Draw Hue, Saturation, and Brightness(Value) color space histgram of pixel in ggplot2. HSB color space computed from RGB value.
-#' Calculate mean, sd, skewness, and kurtsis for each histgram.
+#' Analysis an image from .bmp, .jpg(.jpeg) and .png file. Draw Hue, Saturation, and Brightness(Value) color space histogram of pixel in ggplot2. HSB color space computed from RGB value.
+#' Calculate mean, sd, skewness, and kurtsis for each histogram.
 #'
 #' @param input Set file, folder or url for image analysis corresponding to mode parameter.
 #' @param mode Select a mode in all four modes. Modes are "file"(default), "url", "folder", and "scraping".
-#' @param output Set the name of output histgram and data. Each mode have default output name.
-#' @param hist Whether histgram draw or not. Dafult is draw.
+#' @param output Set the name of output histogram and data. Each mode have default output name.
+#' @param hist Whether histogram draw or not. Dafult is draw.
 #' However, you should set FALSE when you want fast computation for images of digital camera and smartphone.
 #' Rendering of ggplot2 is so long for these large pixels image.
-#' @param resize This argument is important to process many image histgram fastly.
-#' If you set resize=1/4 or 1/8, the speed of drawing histgram is dramatically up although output values are approximation.
-#' Resize value indicate image compression ratio. Resize is recommended when you use folder mode and want to get many histgram.
+#' @param resize This argument is important to process many image histogram fastly.
+#' If you set resize=1/4 or 1/8, the speed of drawing histogram is dramatically up although output values are approximation.
+#' Resize value indicate image compression ratio. Resize is recommended when you use folder mode and want to get many histogram.
 #' @param endoff If you want to get rid of image borders extreme value (white or black frame), you set this parameter TRUE.
-#' @param textsize Font size of histgram caption. Dafult setting is textsize=16.
+#' @param textsize Font size of histogram caption. Dafult setting is textsize=16.
 #'
-#' @return image histgram and thier descriptive stastics (HSB color space). Folder and scraping mode provide a pdf file.
+#' @return image histogram and thier descriptive stastics (HSB color space). Folder and scraping mode provide a pdf file.
 #' Range of all values are 0-1.
 #'
 #' @export
@@ -38,18 +38,18 @@
 #'
 #' # If you have an image folder in your PC, easily analyze all images by using folder mode.
 #' # Althogh the type of these images are limited ".bmp", ".jpg" or ".png", three type files in a folder can analyze by one command.
-#' # Histgram is provided by a pdf file.
+#' # Histogram is provided by a pdf file.
 #' hsbhist(input=setwd(system.file("extdata", package="imhistR")), mode="folder", output="Rlogo", endoff=TRUE)
 #'
 #' # When you analyze your picture folder, many time may have need.
-#' # Resize give fast drawing of histgram. Compressed method is kernel.
+#' # Resize give fast drawing of histogram. Compressed method is kernel.
 #' hsbhist(input="folder name of iphone picture", mode="folder", resize=1/4)
 #'
 #'
 #' # Web scraping from google image search is conducted by scraping mode. Twenty images were automatically downloaded and analyzed.
 #' # So many scraping should avoid in order to conform web manner.
 #' # If you already scraping image by other function of this package, you should use folder mode.
-#' # Histgram is provided by a pdf file.
+#' # Histogram is provided by a pdf file.
 #' url <- "url from google image search of xxx"  # This package does not provide the way to scraping other web pages
 #' hsbhist(input=url, mode="scraping")
 #'
@@ -178,7 +178,7 @@ hsbhist <- function(input, mode="file", output=input, hist=TRUE,
             maxdist <- as.numeric(dist$range[which.max(dist$v)])
             maxhue <- ((1/70 * maxdist) + (1/70 * (maxdist-1))) / 2
           }
-          ##### histgram
+          ##### histogram
           if(hist==TRUE) {
             g <- ggplot2::ggplot(imgdat, ggplot2::aes(x=value, fill=..x..)) +
               ggplot2::stat_bin(binwidth = 1/70) +

@@ -6,6 +6,6 @@
 \alias{imhistR-package}
 \title{imhistR}
 \description{
-Analysis of image histgram
+Analysis of image histogram
 }
 
