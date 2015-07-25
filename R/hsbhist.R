@@ -167,7 +167,7 @@ hsbhist <- function(input, mode="file", output=input, hist=TRUE,
         for(i in 1:3) {
           ###### stastics
           imgdat <- tidyr::gather(data.frame(dat[,,i]), pixel, value)
-          if(endoff)   imgdat <- dplyr::filter(imgdat, dplyr::between(value, 0.01, 0.99))
+          if(endoff)  imgdat <- dplyr::filter(imgdat, dplyr::between(value, 0.01, 0.99))
           imgval <- na.omit(dplyr::select(imgdat, value))
           imgsta <- c(as.numeric(unlist(dplyr::summarise(imgval, mean(value), sd(value)))),
                       e1071::skewness(imgval$value, type=2), e1071::kurtosis(imgval$value, type=2))
@@ -177,6 +177,7 @@ hsbhist <- function(input, mode="file", output=input, hist=TRUE,
               imgdat, range = cut(value, breaks=seq(0, 1, 1/70))), range), v=n())
             maxdist <- as.numeric(dist$range[which.max(dist$v)])
             maxhue <- ((1/70 * maxdist) + (1/70 * (maxdist-1))) / 2
+            if(is.na(maxhue))  maxhue <- 0
           }
           ##### histogram
           if(hist==TRUE) {

@@ -29,3 +29,5 @@ Install:
     ```
 
 You get an image histogram and their descriptive stastics.
+
+The Japanese package vignette is available [here](http://rpubs.com/mokazuma/imhistR).
