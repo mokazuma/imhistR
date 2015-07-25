@@ -28,4 +28,4 @@ Install:
              mode="url", output="Lenna")
     ```
 
-You get an image histgram and their descriptive stastics.
+You get an image histogram and their descriptive stastics.
