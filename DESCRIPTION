@@ -12,14 +12,14 @@ License: GPL (>=2)
 LazyData: TRUE
 Imports:
   Cairo,
+  dplyr,
   downloader,
   e1071,
   ggplot2,
   grid,
-  jpeg,
   mmand,
   patchPlot,
-  png,
+  readbitmap,
   rvest,
   scales,
   tidyr
