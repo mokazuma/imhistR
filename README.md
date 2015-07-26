@@ -24,8 +24,8 @@ Install:
 
     ``` r
     require("imhistR")
-    lrgbhist(input="http://www.ess.ic.kanagawa-it.ac.jp/std_img/colorimage/Lenna.jpg", 
-             mode="url", output="Lenna")
+    lrgbhist(input="https://www.r-project.org/Rlogo.png", 
+             mode="url", output="Rlogo", endoff=TRUE)
     ```
 
 You get an image histogram and their descriptive stastics.

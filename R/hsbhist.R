@@ -155,10 +155,10 @@ hsbhist <- function(input, mode="file", output=input, hist=TRUE,
           dat <- dat2
         }
         ##### color settings
-        v <- .8; leg <- c(0, .5, 1)
+        s <- 1; v <- .8; leg <- c(0, .5, 1)
         #pals <- c("red","yellow","green","cyan","blue","magenta", "red")
-        pals <- c(hsv(0, 1, v), hsv(1/6, 1, v), hsv(2*(1/6), 1, v), hsv(3*(1/6), 1, v),
-                  hsv(4*(1/6), 1, v), hsv(5*(1/6), 1, v), hsv(1, 1, v))
+        pals <- c(hsv(0, s, v), hsv(1/6, s, v), hsv(2*(1/6), s, v), hsv(3*(1/6), s, v),
+                  hsv(4*(1/6), s, v), hsv(5*(1/6), s, v), hsv(1, s, v))
 
         ##### print settings
         if(mode=="scraping")  setwd(current)
