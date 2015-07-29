@@ -32,9 +32,8 @@
 #'
 #' # Url mode needs to input image URL.
 #' # Only URL tail ".bmp", ".jpg" or ".png" can analyze.
-#' url <- "http://www.ess.ic.kanagawa-it.ac.jp/std_img/colorimage/Mandrill.jpg"
-#' lrgbhist(input=url, mode="url", output="Mandrill")
-#'
+#' url <- "https://www.r-project.org/Rlogo.png"
+#' lrgbhist(input=url, mode="url", output="Rlogo", endoff=TRUE)
 #'
 #' # If you have an image folder in your PC, easily analyze all images by using folder mode.
 #' # Althogh the type of these images are limited ".bmp", ".jpg" or ".png", three type files in a folder can analyze by one command.
@@ -78,7 +77,7 @@ lrgbhist <- function(input, mode="file", output=input, hist=TRUE,
       if(mode=="file") {
         datfil <- input; filNum <- 1
       } else if(mode=="url") {
-        if(is.element(input, output))   output = "webfile"
+        if(is.element(input, output))   output <- "webfile"
         downloader::download(input, paste0(current, "/", output, filetype), mode="wb")
         datfil <- paste0(output, filetype); filNum <- 1
       } else if(mode=="folder") {
@@ -88,9 +87,10 @@ lrgbhist <- function(input, mode="file", output=input, hist=TRUE,
                     dir(path=input, full.names=TRUE, ignore.case=TRUE, pattern=".png") )
         filNum <- length(datfil)
       } else if(mode=="scraping") {
+        if(is.element(input, output))  output <- "webfile"
         filetype <- ".jpg"
         if (!file.exists(paste0(current, "/", mode)))  dir.create(mode)     # folder check
-        cat(paste0(mode, "folder in ", current, "\n"))  # return message
+        cat(paste0(mode, " folder in ", current, "\n"))  # return message
         webinf <- rvest::html(input)
         imgnod <- rvest::html_nodes(webinf, "img")
         nodtext <- rvest::html_attrs(imgnod)
@@ -115,9 +115,9 @@ lrgbhist <- function(input, mode="file", output=input, hist=TRUE,
       }
       for(f in 1:filNum) {
         ##### read dat
-        if(mode=="folder" || mode=="scraping") {
-          cat(paste0("Processing ", title[f], "(", f, "/", filNum, ")", "...\n"))
-        }
+#         if(mode=="folder" || mode=="scraping") {
+#           cat(paste0("Processing ", title[f], "(", f, "/", filNum, ")", "...\n"))
+#         }
         if(mode=="scraping")  setwd(paste0(current, "/scraping"))
         img <- readbitmap::read.bitmap(datfil[f])  # read file
         if(mode=="url")       file.remove(datfil[f])

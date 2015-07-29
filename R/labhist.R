@@ -32,8 +32,8 @@
 #'
 #' # Url mode needs to input image URL.
 #' # Only URL tail ".bmp", ".jpg" or ".png" can analyze.
-#' url <- "http://www.ess.ic.kanagawa-it.ac.jp/std_img/colorimage/Mandrill.jpg"
-#' labhist(input=url, mode="url", output="Mandrill")
+#' url <- "http://www.ess.ic.kanagawa-it.ac.jp/std_img/colorimage/Lenna.jpg"
+#' labhist(input=url, mode="url", output="Lenna")
 #'
 #'
 #' # If you have an image folder in your PC, easily analyze all images by using folder mode.
@@ -79,7 +79,7 @@ labhist <- function(input, mode="file", output=input, hist=TRUE,
       if(mode=="file") {
         datfil <- input; filNum <- 1
       } else if(mode=="url") {
-        if(is.element(input, output))   output = "webfile"
+        if(is.element(input, output))   output <- "webfile"
         downloader::download(input, paste0(current, "/", output, filetype), mode="wb")
         datfil <- paste0(output, filetype); filNum <- 1
       } else if(mode=="folder") {
@@ -89,9 +89,10 @@ labhist <- function(input, mode="file", output=input, hist=TRUE,
                     dir(path=input, full.names=TRUE, ignore.case=TRUE, pattern=".png") )
         filNum <- length(datfil)
       } else if(mode=="scraping") {
+        if(is.element(input, output))  output <- "webfile"
         filetype <- ".jpg"
         if (!file.exists(paste0(current, "/", mode)))  dir.create(mode)     # folder check
-        cat(paste0(mode, "folder in ", current, "\n"))  # return message
+        cat(paste0(mode, " folder in ", current, "\n"))  # return message
         webinf <- rvest::html(input)
         imgnod <- rvest::html_nodes(webinf, "img")
         nodtext <- rvest::html_attrs(imgnod)
@@ -155,7 +156,7 @@ labhist <- function(input, mode="file", output=input, hist=TRUE,
           for(i in 1:nrow(img))   dat[i,,] <- patchPlot::RGB2Lab(img[i,,1:3])
         }
         ##### color settings
-        val <- c("L* dimension", "A* dimension", "B* dimension")
+        val <- c("L* dimension", "a* dimension", "b* dimension")
         hcol <- c("black", "white", "green", "magenta", "blue", "yellow")
         xrange <- c(100, 220, 220)
         leg <- data.frame(c(0, 50, 100), c(-110, 0, 110), c(-110, 0, 110))
@@ -218,8 +219,8 @@ labhist <- function(input, mode="file", output=input, hist=TRUE,
       }
       ### print end
       colnames(savedat) <- c("Mean_L*dim.", "SD_L*dim.", "Skew_L*dim.", "Kurt_L*dim.",
-                             "Mean_A*dim.", "SD_A*dim.", "Skew_A*dim.", "Kurt_A*dim.",
-                             "Mean_B*dim.", "SD_B*dim.", "Skew_B*dim.", "Kurt_B*dim.")
+                             "Mean_a*dim.", "SD_a*dim.", "Skew_a*dim.", "Kurt_a*dim.",
+                             "Mean_b*dim.", "SD_b*dim.", "Skew_b*dim.", "Kurt_b*dim.")
       row.names(savedat) <- title
       if(hist==TRUE && (mode=="folder" || mode=="scraping")) {
         dev.off()

@@ -46,8 +46,8 @@ setwd(originaidir)      # set original dir
 
 # Url mode needs to input image URL.
 # Only URL tail ".bmp", ".jpg" or ".png" can analyze.
-url <- "http://www.ess.ic.kanagawa-it.ac.jp/std_img/colorimage/Mandrill.jpg"
-labhist(input=url, mode="url", output="Mandrill")
+url <- "http://www.ess.ic.kanagawa-it.ac.jp/std_img/colorimage/Lenna.jpg"
+labhist(input=url, mode="url", output="Lenna")
 
 
 # If you have an image folder in your PC, easily analyze all images by using folder mode.

@@ -46,9 +46,8 @@ setwd(originaidir)      # set original dir
 
 # Url mode needs to input image URL.
 # Only URL tail ".bmp", ".jpg" or ".png" can analyze.
-url <- "http://www.ess.ic.kanagawa-it.ac.jp/std_img/colorimage/Mandrill.jpg"
-lrgbhist(input=url, mode="url", output="Mandrill")
-
+url <- "https://www.r-project.org/Rlogo.png"
+lrgbhist(input=url, mode="url", output="Rlogo", endoff=TRUE)
 
 # If you have an image folder in your PC, easily analyze all images by using folder mode.
 # Althogh the type of these images are limited ".bmp", ".jpg" or ".png", three type files in a folder can analyze by one command.

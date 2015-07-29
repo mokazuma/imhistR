@@ -79,7 +79,7 @@ hsbhist <- function(input, mode="file", output=input, hist=TRUE,
       if(mode=="file") {
         datfil <- input; filNum <- 1
       } else if(mode=="url") {
-        if(is.element(input, output))   output = "webfile"
+        if(is.element(input, output))   output <- "webfile"
         downloader::download(input, paste0(current, "/", output, filetype), mode="wb")
         datfil <- paste0(output, filetype); filNum <- 1
       } else if(mode=="folder") {
@@ -89,9 +89,10 @@ hsbhist <- function(input, mode="file", output=input, hist=TRUE,
                     dir(path=input, full.names=TRUE, ignore.case=TRUE, pattern=".png") )
         filNum <- length(datfil)
       } else if(mode=="scraping") {
+        if(is.element(input, output))  output <- "webfile"
         filetype <- ".jpg"
         if (!file.exists(paste0(current, "/", mode)))  dir.create(mode)     # folder check
-        cat(paste0(mode, "folder in ", current, "\n"))  # return message
+        cat(paste0(mode, " folder in ", current, "\n"))  # return message
         webinf <- rvest::html(input)
         imgnod <- rvest::html_nodes(webinf, "img")
         nodtext <- rvest::html_attrs(imgnod)

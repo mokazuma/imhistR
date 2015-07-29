@@ -30,7 +30,6 @@ Install:
 * The latest development version get from github with
 
     ```R
-    # You run following two line cord only when first time to use this package.
     install.packages("devtools")  # if you are still not download
     devtools::install_github("mokazuma/imhistR")
     ```
@@ -39,10 +38,9 @@ Install:
 
     ```R
     require("imhistR")
-    lrgbhist(input="https://www.r-project.org/Rlogo.png", 
-             mode="url", output="Rlogo", endoff=TRUE)
+    lrgbhist(input="https://www.r-project.org/Rlogo.png", mode="url", output="Rlogo", endoff=TRUE)
     ```
 
 You get an image histogram and their descriptive stastics.
 
-The Japanese package vignette is available [here](http://rpubs.com/mokazuma/imhistR).
+The Japanese version of package vignette is available [here](http://rpubs.com/mokazuma/imhistR).
