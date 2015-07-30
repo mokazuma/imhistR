@@ -115,9 +115,9 @@ lrgbhist <- function(input, mode="file", output=input, hist=TRUE,
       }
       for(f in 1:filNum) {
         ##### read dat
-#         if(mode=="folder" || mode=="scraping") {
-#           cat(paste0("Processing ", title[f], "(", f, "/", filNum, ")", "...\n"))
-#         }
+        if(mode=="folder" || mode=="scraping") {
+          cat(paste0("Processing ", title[f], "(", f, "/", filNum, ")", "...\n"))
+        }
         if(mode=="scraping")  setwd(paste0(current, "/scraping"))
         img <- readbitmap::read.bitmap(datfil[f])  # read file
         if(mode=="url")       file.remove(datfil[f])
