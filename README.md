@@ -15,7 +15,7 @@ Install:
 -   The latest development version get from github with
 
     ``` r
-    install.packages("devtools")  # if you are still not download
+    if (!require('devtools')) install.packages('devtools')
     devtools::install_github("mokazuma/imhistR")
     ```
 
@@ -23,7 +23,8 @@ Install:
 
     ``` r
     require("imhistR")
-    lrgbhist(input="https://www.r-project.org/Rlogo.png", mode="url", output="Rlogo", endoff=TRUE)
+    lrgbhist(input="https://www.r-project.org/Rlogo.png", 
+             mode="url", output="Rlogo", endoff=TRUE)
     ```
 
 You get an image histogram and their descriptive stastics.
