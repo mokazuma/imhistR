@@ -103,7 +103,7 @@ hsbhist <- function(input, mode="file", output=input, hist=TRUE,
           Sys.sleep(1)
         }
         datfil <- dir(path=paste0(current, "/", mode), pattern=filetype)
-        filNum <- length(path = paste0(current, "/", mode), list.files(pattern = ".jpg"))
+        filNum <- length(list.files(path = paste0(current, "/", mode), pattern = ".jpg"))
       }
 
       ##### main loop
