@@ -98,12 +98,12 @@ hsbhist <- function(input, mode="file", output=input, hist=TRUE,
         nodtext <- rvest::html_attrs(imgnod)
         for(i in 1:length(nodtext)) {
           downloader::download(as.character(nodtext[[i]][2]),
-                               sprintf("%s/%s/%s_%02d%s", current, "scraping", output, i, filetype),
+                               sprintf("%s/%s/%s_%02d%s", current, "scraping", output, i, filetype), 
                                mode="wb")
           Sys.sleep(1)
         }
         datfil <- dir(path=paste0(current, "/", mode), pattern=filetype)
-        filNum <- length(list.files(pattern = ".jpg"))
+        filNum <- length(path = paste0(current, "/", mode), list.files(pattern = ".jpg"))
       }
 
       ##### main loop
