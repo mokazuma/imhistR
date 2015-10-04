@@ -101,7 +101,7 @@ lrgbhist <- function(input, mode="file", output=input, hist=TRUE,
           Sys.sleep(1)
         }
         datfil <- dir(path=paste0(current, "/", mode), pattern=filetype)
-        filNum <- length(nodtext)
+        filNum <- length(list.files(pattern = ".jpg"))
       }
 
       ##### main loop
