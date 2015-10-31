@@ -211,7 +211,7 @@ labhist <- function(input, mode="file", output=input, hist=TRUE,
                             gp=grid::gpar(fontsize=2*textsize, fontfamily="MEI"))
           } else {
             grid::grid.text(title[f], vp=grid::viewport(layout.pos.row=1, layout.pos.col=2:3),
-                            gp=grid::gpar(fontsize=2*textsize, fontfamily="Meiryo"))
+                            gp=grid::gpar(fontsize=2*textsize, fontfamily="Osaka"))
           }
           grid::pushViewport(grid::viewport(layout.pos.row=1, layout.pos.col=1, just=c('centre','top')))
           grid::grid.draw(grid::rasterGrob(imgp, interpolate=TRUE))
